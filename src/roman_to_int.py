@@ -18,9 +18,12 @@ def roman_to_int(roman):
             return "Neplatny vstup."
         
         if char == prev_char:
+            if char == "V" or char=="L" or char=="D":
+                return "Nelze mit vice znaku (V, L, D,) za sebou."
             count += 1
             if count == 3:
                 return "Neplatny vstup: vice nez tri stejne rimske cislice za sebou."
+        
         else:
             count = 0
         
