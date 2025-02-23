@@ -1,43 +1,53 @@
-
 import sys
 
-def roman_to_int(roman):
-    roman_values = {
-        'I': 1, 'V': 5, 'X': 10, 'L': 50,
-        'C': 100, 'D': 500, 'M': 1000
-    }
+class RomanToIntConverter:
+    def __init__(self, roman):
+        self.roman = roman
+        self.roman_values = {
+            'I': 1, 'V': 5, 'X': 10, 'L': 50,
+            'C': 100, 'D': 500, 'M': 1000
+        }
     
-    total = 0
-    prev_value = 0
-    count = 0
-    prev_char = ""
+    def is_valid_roman(self):
+        for char in self.roman:
+            if char not in self.roman_values:
+                return False
+        return True
     
-    for char in reversed(roman):
-        value = roman_values.get(char, 0)
-        if value == 0:
-            return "Neplatny vstup."
+    def to_integer(self):
+        if not self.is_valid_roman():
+            return "Invalid input."
         
-        if char == prev_char:
-            if char == "V" or char=="L" or char=="D":
-                return "Nelze mit vice znaku (V, L, D,) za sebou."
-            count += 1
-            if count == 3:
-                return "Neplatny vstup: vice nez tri stejne rimske cislice za sebou."
+        total = 0
+        prev_value = 0
+        count = 0
+        prev_char = ""
         
-        else:
-            count = 0
+        for char in reversed(self.roman):
+            value = self.roman_values.get(char, 0)
+            
+            if char == prev_char:
+                if char in {"V", "L", "D"}:
+                    return "Invalid input."
+                count += 1
+                if count == 3:
+                    return "Invalid input: more than 3 same roman numerals in a row"
+            else:
+                count = 0
+            
+            if value < prev_value:
+                total -= value
+            else:
+                total += value
+            
+            prev_value = value
+            prev_char = char
         
-        if value < prev_value:
-            total -= value
-        else:
-            total += value
-        
-        prev_value = value
-        prev_char = char
-    
-    return total
+        return total
 
-if len(sys.argv) != 2:
-    print("Byl zadan jiny pocet argumentu")
-else:
-    print(roman_to_int(sys.argv[1]))
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Invalid arguments")
+    else:
+        converter = RomanToIntConverter(sys.argv[1])
+        print(converter.to_integer())
